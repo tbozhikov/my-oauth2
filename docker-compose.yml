@@ -1,25 +1,18 @@
-backend: 
-  image: oauth2-server:1.0 
-  ports: 
-    - 8888:8888 
-  restart: always
-
-frontend: 
-  image: client-node:1.0 
-  # links: 
-    #  - backend:redis  
-  # ports: 
-  #   - 8081:8081 
-  # environment: 
-  #   - VAR1=value 
-  restart: always
-
-web-server:
-  image: web-server:1.0
-  ports: 
-    - 8080:8080 
-  restart: always
-
-web-client:
+version: '3.7'
+services:
   
-    
+  oauth-server:
+    image: oauth2-server:1.0 
+    ports: 
+      - 8888:8888 
+    restart: always
+    environment:
+      - DOCKER=1
+
+  web-server:
+    image: ng-web-server:1.0
+    ports: 
+      - 8080:8080 
+    restart: always
+    environment:
+      - DOCKER=1

@@ -1,10 +1,8 @@
-// import 'es6-shim';
-// import 'reflect-metadata';
-// import * as jwt from 'jsonwebtoken';
 import * as fs from 'fs';
 import * as core from "express-serve-static-core";
+import * as crypto from 'crypto';
+import * as express from 'express';
 
-const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 
 const users = [
@@ -13,26 +11,18 @@ const users = [
 ];
 
 
-// const findByUsername = function (username, callback) {
-//     process.nextTick(function () {
-//         for (let i = 0, len = users.length; i < len; i++) {
-//             const user = users[i];
-//             if (user.username === username) {
-//                 return callback(null, user);
-//             }
-//         }
-//         return callback(null, null);
-//     });
-// };
+const findByUsername = (username: any, callback: (err: any, user: any) => any) => {
+    for (let i = 0, len = users.length; i < len; i++) {
+        const user = users[i];
+        if (user.username === username) {
+            return callback(null, user);
+        }
+    }
+    return callback(null, null);
+};
 
 export function setupServer(server: core.Express) {
-    // server.use(bodyParser.json());
-    // server.use(function (req: any, res: any, next: any) {
-    //     res.header('Access-Control-Allow-Origin', '*');
-    //     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    //     next();
-    // });
-
+    server.use(express.json());
     server.get('/health', (req: any, res: any, next: any) => {
         res.sendStatus(200);
     });
@@ -53,23 +43,46 @@ export function setupServer(server: core.Express) {
             let token = jwt.sign({ "body": "stuff" }, privateKey, { algorithm: 'RS256' });
             console.log(">>> token", token);
 
-            res.send(token);
 
             // res.status(200).send();
         });
 
     server.post('/users/authenticate',
         (req: any, res: any, next: any) => {
-            let privateKey = fs.readFileSync('./rsa256/jwt-rs256.key', 'utf8');
-            console.log(privateKey);
-            // create token for user
-            let token = jwt.sign({ "body": "stuff" }, privateKey, { algorithm: 'RS256' });
-            console.log(">>> token", token);
+            console.log(`authenticating user, encrypted msg: ${req.body.base64EncodedMsg}`);
+            console.log(`req.body: ${JSON.stringify(req.body)}`);
 
-            res.send(token);
+            let decryptedMessage = decrypt(req.body.base64EncodedMsg);
+            console.log(`decrypted msg: ${decryptedMessage}`);
 
-            // res.status(200).send();
+            let user = extractUserDataFromMessage(decryptedMessage);
+
+            console.log('searching for user', user)
+
+            findByUsername(user.username, (err, userFromStore) => {
+
+                console.log('searching finished', userFromStore);
+
+                if (userFromStore) {
+                    let token = jwt.sign({ 'user': 'stuff' }, 'some-very-secure-secret');
+                    res.json({ access_token: token });
+                } else {
+                    res.sendStatus(403);
+                }
+            });
         });
+}
+
+function extractUserDataFromMessage(message: string): any {
+    const user = JSON.parse(message.split('.')[0]);
+    return user;
+}
+
+function decrypt(base64EncodedMsg: string): string {
+    const publicKey = fs.readFileSync('./rsa256/jwt-rs256.key.pub', 'utf8');
+    const decrypted = crypto.publicDecrypt(publicKey, Buffer.from(base64EncodedMsg, 'base64'));
+
+    return decrypted.toString();
 }
 
 function isAuthorized(req: any, res: any, callback: any) {

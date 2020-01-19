@@ -1,0 +1,22 @@
+{
+    "name": "my-oauth2",
+    "version": "1.0.0",
+    "description": "This is a parent project, used as a tasks runner only",
+    "scripts": {
+        "start-all-docker": "npm run build-web-server-docker && npm run build-oauth2-server-docker && docker-compose up --force-recreate",
+        "build-web-client": "cd ng-client && ng build",
+        "build-web-server-docker": "npm run build-web-client && cd ng-web-server && npm run build-docker-image",
+        "build-oauth2-server-docker": "cd oauth2-server && npm run build-docker-image"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@types/node": "^13.1.8",
+        "@types/express": "^4.17.2",
+        "typescript": "3.7.5"
+    },
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "express": "^4.17.1"
+    }
+}

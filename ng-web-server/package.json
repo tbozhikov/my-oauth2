@@ -4,18 +4,24 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm i && tsc && node index.js",
-    "start-local": "npm i && tsc && npm run copy-client-files && node index.js",
-    "copy-client-files": "cp -r ../ng-client/dist/ng-client ./"
+    "build": "npm i && tsc",
+    "start": "npm run build && node index.js",
+    "start-local": "npm run build && npm run copy-client-files && node index.js",
+    "copy-client-files": "cp -r ../ng-client/dist/ng-client ./",
+    "build-docker-image": "npm run build && npm run copy-client-files && docker image build -t ng-web-server:1.0 .",
+    "run-docker-container": "docker container run --publish 8080:8080 ng-web-server:1.0 "
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^13.1.8",
     "@types/express": "^4.17.2",
+    "@types/node": "^13.1.8",
+    "@types/request": "^2.48.4",
     "typescript": "3.7.5"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "request": "^2.88.0"
   }
 }
