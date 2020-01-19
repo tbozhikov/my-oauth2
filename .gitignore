@@ -1,0 +1,4 @@
+node_modules
+**/*.key
+**/*.pub
+ng-web-server/ng-client/**/*.*
