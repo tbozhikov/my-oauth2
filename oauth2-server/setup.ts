@@ -2,24 +2,58 @@ import * as fs from 'fs';
 import * as core from "express-serve-static-core";
 import * as crypto from 'crypto';
 import * as express from 'express';
+import { MongoClient } from 'mongodb';
+
+console.log(process.env.MONGO_INITDB_ROOT_USERNAME);
+console.log(process.env.MONGO_INITDB_ROOT_PASSWORD);
+console.log(process.env.DOCKER);
 
 const jwt = require('jsonwebtoken');
-
+const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${process.env.DOCKER ? 'mongodb' : 'localhost'}:27017/MyOauth2`;
+console.log(url);
 const users = [
     { id: 1, username: 'toto', password: 'secret', displayName: 'Toto', emails: [{ value: 'toto@toto.com' }] }
     , { id: 2, username: 'kiro', password: 'kiro', displayName: 'Kiro', emails: [{ value: 'kiro@kiro.com' }] }
 ];
 
+MongoClient.connect(url, (err: any, mongoClient) => {
+    if (err) throw err;
+    var dbo = mongoClient.db("MyOauth2");
+    dbo.collections().then(value => { console.log(value) });
+    // dbo.collection("Users").findOne({}, function (err: any, result: any) {
+    //     if (err) throw err;
+    //     console.log(result.username);
+    //     mongoClient.close();
+    // });
+    mongoClient.close();
+});
 
 const findByUsername = (username: any, callback: (err: any, user: any) => any) => {
-    for (let i = 0, len = users.length; i < len; i++) {
-        const user = users[i];
-        if (user.username === username) {
-            return callback(null, user);
-        }
-    }
-    return callback(null, null);
+    MongoClient.connect(url, (err: any, mongoClient) => {
+        if (err) throw err;
+        var dbo = mongoClient.db("MyOauth2");
+        dbo.collection("Accounts").findOne({ username: username }, function (err: any, result: any) {
+            if (err) throw err;
+            console.log(JSON.stringify(result));
+            mongoClient.close();
+
+            if (result) {
+                return callback(null, result);
+            } else {
+                return callback(null, null);
+            }
+        });
+    });
 };
+// const findByUsername = (username: any, callback: (err: any, user: any) => any) => {
+//     for (let i = 0, len = users.length; i < len; i++) {
+//         const user = users[i];
+//         if (user.username === username) {
+//             return callback(null, user);
+//         }
+//     }
+//     return callback(null, null);
+// };
 
 export function setupServer(server: core.Express) {
     server.use(express.json());

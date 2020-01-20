@@ -8,6 +8,9 @@ services:
     restart: always
     environment:
       - DOCKER=1
+      - MONGO_INITDB_ROOT_USERNAME=admin-user
+      - MONGO_INITDB_ROOT_PASSWORD=admin-password
+      - MONGO_INITDB_DATABASE=Users
 
   web-server:
     image: ng-web-server:1.0
@@ -16,3 +19,15 @@ services:
     restart: always
     environment:
       - DOCKER=1
+
+  mongodb:
+    image: mongo:4.0.4
+    volumes:
+      # - './data:/data/db'
+      - ./db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    ports:
+          - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin-user
+      - MONGO_INITDB_ROOT_PASSWORD=admin-password
+      - MONGO_INITDB_DATABASE=Users
