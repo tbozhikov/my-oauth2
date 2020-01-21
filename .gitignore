@@ -1,9 +1,7 @@
 node_modules
-**/*.key
-**/*.pub
-ng-web-server/ng-client/**/*.*
+/ng-web-server/ng-client/**/*.*
 **/*.js
-db/data-volume/journal
+/db/data-volume/journal
 
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 

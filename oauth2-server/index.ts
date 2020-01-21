@@ -87,7 +87,7 @@ class Server {
     }
 
     private decrypt(base64EncodedMsg: string): string {
-        const publicKey = fs.readFileSync('./rsa256/jwt-rs256.key.pub', 'utf8');
+        const publicKey = fs.readFileSync('./rsa256/public.key.pub', 'utf8');
         const decrypted = crypto.publicDecrypt(publicKey, Buffer.from(base64EncodedMsg, 'base64'));
 
         return decrypted.toString();
