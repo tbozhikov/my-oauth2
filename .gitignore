@@ -3,3 +3,4 @@ node_modules
 **/*.pub
 ng-web-server/ng-client/**/*.*
 **/*.js
+db/data-volume/journal
