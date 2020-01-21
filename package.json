@@ -4,7 +4,7 @@
     "description": "This is a parent project, used as a tasks runner only",
     "scripts": {
         "start-all-docker": "npm run build-web-server-docker && npm run build-oauth2-server-docker && docker-compose up --force-recreate",
-        "build-web-client": "cd angular-client && ng build",
+        "build-web-client": "cd angular-client && npm i && ng build",
         "build-web-server-docker": "npm run build-web-client && cd ng-web-server && npm run build-docker-image",
         "build-oauth2-server-docker": "cd oauth2-server && npm run build-docker-image"
     },
