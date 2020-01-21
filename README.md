@@ -3,7 +3,7 @@ To start the app, from the root folder of the project execute:
 `npm run start-all-docker`
 
 This command builds and runs (using Docker containers):
-- A web server (`ng-web-server` folder), hosting an Angular app (`ng-client` folder)
+- A web server (`ng-web-server` folder), hosting an Angular app (`angular-client` folder)
 - An authentication server (`oauth2-server` folder)
 - A `mongodb` database
 - A `Vault` service (`vault` folder)

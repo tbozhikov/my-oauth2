@@ -79,11 +79,11 @@ class Server {
         this.express.get('*',
             (req: any, res: any) => {
                 if (allowedExt.filter(ext => req.url.indexOf(ext) > 0).length > 0) {
-                    res.sendFile(path.resolve(`./ng-client/${req.url}`));
+                    res.sendFile(path.resolve(`./angular-client/${req.url}`));
                 } else {
                     console.log('Serving index.html');
 
-                    res.sendFile(path.resolve('./ng-client/index.html'));
+                    res.sendFile(path.resolve('./angular-client/index.html'));
                 }
             }
         );

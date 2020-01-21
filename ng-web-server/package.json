@@ -7,7 +7,7 @@
     "build": "npm i && tsc",
     "start": "npm run build && node index.js",
     "start-local": "npm run build && npm run copy-client-files && node index.js",
-    "copy-client-files": "cp -r ../ng-client/dist/ng-client ./",
+    "copy-client-files": "cp -r ../angular-client/dist/angular-client ./",
     "build-docker-image": "npm run build && npm run copy-client-files && docker image build -t ng-web-server:1.0 .",
     "run-docker-container": "docker container run --publish 8080:8080 ng-web-server:1.0 "
   },
