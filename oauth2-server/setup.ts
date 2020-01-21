@@ -9,7 +9,7 @@ console.log(process.env.MONGO_INITDB_ROOT_PASSWORD);
 console.log(process.env.DOCKER);
 
 const jwt = require('jsonwebtoken');
-const url = `mongodb://${process.env.MONGO_INITDB_ROOT_USERNAME}:${process.env.MONGO_INITDB_ROOT_PASSWORD}@${process.env.DOCKER ? 'mongodb' : 'localhost'}:27017/MyOauth2`;
+const url = `mongodb://admin-user:admin-password@${process.env.DOCKER ? 'mongodb' : 'localhost'}:27017/myOauth2`;
 console.log(url);
 const users = [
     { id: 1, username: 'toto', password: 'secret', displayName: 'Toto', emails: [{ value: 'toto@toto.com' }] }
